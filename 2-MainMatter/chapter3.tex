@@ -1,0 +1,60 @@
+%!TEX root = ../template.tex
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% chapter3.tex
+%% NOVA thesis document file
+%%
+%% Chapter with a short latex tutorial and examples
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\typeout{NT FILE chapter3.tex}%
+
+\makeatletter
+\newcommand{\ntifpkgloaded}{%
+  \@ifpackageloaded%
+}
+\makeatother
+
+
+\chapter{Work Plan}
+\label{cha:work_plan}
+
+This chapter aims at defining the scope of our work, what our goal, the plan to execute it and what has already been done, along with its preliminary results.
+
+
+\section{Overview} % (fold)
+\label{sec:work_overview}
+
+The primary objective of our work is the development of a computational framework capable of generating optimized protein purification protocols based on "standard" biochemical inputs. These inputs may include, but are not limited to, the protein's primary amino acid sequence, its predicted or known 3D structure, molecular size and weight, eletrical charge, and other relevant metadata. The ultimate goal is to provide a tool that mitigates the significant investment of time, labor, and financial resources typically required by scientists when designing purification strategies for proteins that lack established, peer-reviewed protocols.
+
+To define a comprehensive work plan, we will be analyzing the system requirements in reverse order, starting from the final objective and moving back to the initial steps. At the highest level, the project aims to produce an integrated system (which we commonly refer to as "the pipeline") that translates molecular data into a sequential "recipe" for purification. We distinguish between a "model" and an "algorithm" in this context: while a deep learning model will serve as the core predictive engine, it is unlikely that a standalone architecture can ingest raw biochemical data and output a perfectly formatted, laboratory-ready protocol without supplementary logic. We recognize that it is unlikely that we will be able to output a perfectly crafted working recipe, but our general goal is to reduce as much as possible the burden of purifying a protein for the first time, so the more complete we can make or output, the better. Therefore, the final system will consist of a highly capable deep learning model encapsulated within an algorithm designed to (maybe) pre-process the inputs, post-process the outputs, ensure logical consistency across every step, and fill any technical gaps that the model might overlook.
+
+Following this logic, the development process is split into two main requirements: the architectural design of the model and the curation of a high-quality dataset. Regarding the architecture, the complexity of generating coherent, sequential instructions suggests the use of Transformer-based models or Large Language Models (LLMs). These architectures currently represent the state-of-the-art in tasks involving natural language and sequence generation. Since a purification protocol is essentially a sequence of textual instructions determined by multiple different physical properties with variable length, the attention mechanisms inherent in Transformers are well-suited to capturing the long-range relationships between protein characteristics and specific purification techniques (such as affinity chromatography, size-exclusion, or ion exchange).
+
+However, the efficacy of such models is heavily dependent on the volume and quality of the training data. Given the lack of a pre-existing, structured database for purification protocols, a significant portion of this project involves the creation of an information extraction pipeline. The most reliable source of these protocols is the vast body of existing scientific literature. Considering the vastness of current scientific literature, we must focus our efforts in a smaller subsection of the literature, so our strategy focuses on papers associated with the discovery of 3D protein structures. The logic is that the determination of a 3D structure demands the prior successful purification of the protein; thus, such papers almost without exception include a detailed description of the purification process in their methodology sections.
+
+By leveraging the Protein Data Bank (PDB) and its associated APIs, we are able to extract the aforementioned information while systematically linking protein structures, their metadata and their corresponding primary literature (must mention PDB previously for this to make sense TODO!!). The extraction of specific steps from these texts will then provide the necessary ground-truth data which, once pre-processed and structured, will be used to train and validate our model. The final phase of the project will involve the refinement of the surrounding algorithm to integrate these predictions into a more user-friendly tool.
+
+% section work_overview (end)
+
+
+
+%\section{Dealing with Bibliography} % (fold)
+%\label{sec:dealing_with_bibliography}
+%
+%Citing something online~\cite{wiki:shuntingyard,flex,bison}.
+
+% section dealing_with_bibliography (end)
+
+
+\section{Work Done} % (fold)
+\label{sec:work_done}
+
+During the initial preparation phase of this thesis, efforts have been concentrated primarily on the research and implementation of the data mining module. Recognizing that the quality of the final predictive tool is contingent upon the data it is trained on, work was initiated to automate the retrieval of scientific papers and the extraction of relevant biochemical metadata.
+
+% section work_done (end)
+
+
+\section{Future Work Plan} % (fold)
+\label{sec:future_work_plan}
+
+% section future_work_plan (end)
