@@ -18,38 +18,95 @@
 \chapter{Work Plan}
 \label{cha:work_plan}
 
-This chapter aims at defining the scope of our work, what our goal, the plan to execute it and what has already been done, along with its preliminary results.
+This chapter aims at defining the scope of our work, what our goal is, the plan to execute it and what has already been done, along with its preliminary results.
 
 
 \section{Overview} % (fold)
 \label{sec:work_overview}
 
-The primary objective of our work is the development of a computational framework capable of generating optimized protein purification protocols based on "standard" biochemical inputs. These inputs may include, but are not limited to, the protein's primary amino acid sequence, its predicted or known 3D structure, molecular size and weight, eletrical charge, and other relevant metadata. The ultimate goal is to provide a tool that mitigates the significant investment of time, labor, and financial resources typically required by scientists when designing purification strategies for proteins that lack established, peer-reviewed protocols.
+Designing a protein purification protocol is currently a resource-intensive process defined by significant trial and error. When a scientist works with a protein that lacks an established protocol, they must often commit substantial time and financial resources to discover an effective sequence of techniques. Our work aims to bridge this gap by creating a system that predicts these protocols using only basic biochemical information.
 
-To define a comprehensive work plan, we will be analyzing the system requirements in reverse order, starting from the final objective and moving back to the initial steps. At the highest level, the project aims to produce an integrated system (which we commonly refer to as "the pipeline") that translates molecular data into a sequential "recipe" for purification. We distinguish between a "model" and an "algorithm" in this context: while a deep learning model will serve as the core predictive engine, it is unlikely that a standalone architecture can ingest raw biochemical data and output a perfectly formatted, laboratory-ready protocol without supplementary logic. We recognize that it is unlikely that we will be able to output a perfectly crafted working recipe, but our general goal is to reduce as much as possible the burden of purifying a protein for the first time, so the more complete we can make or output, the better. Therefore, the final system will consist of a highly capable deep learning model encapsulated within an algorithm designed to (maybe) pre-process the inputs, post-process the outputs, ensure logical consistency across every step, and fill any technical gaps that the model might overlook.
+At this stage, we have developed a data extraction tool to build the necessary foundation for such a system. This tool leverages the Protein Data Bank (PDB) to identify proteins with known 3D structures and then targets their associated scientific literature. We operate on the logic that a protein must be successfully purified before its structure can be determined, so these papers represent a reliable source of proven purification methodologies.
 
-Following this logic, the development process is split into two main requirements: the architectural design of the model and the curation of a high-quality dataset. Regarding the architecture, the complexity of generating coherent, sequential instructions suggests the use of Transformer-based models or Large Language Models (LLMs). These architectures currently represent the state-of-the-art in tasks involving natural language and sequence generation. Since a purification protocol is essentially a sequence of textual instructions determined by multiple different physical properties with variable length, the attention mechanisms inherent in Transformers are well-suited to capturing the long-range relationships between protein characteristics and specific purification techniques (such as affinity chromatography, size-exclusion, or ion exchange).
-
-However, the efficacy of such models is heavily dependent on the volume and quality of the training data. Given the lack of a pre-existing, structured database for purification protocols, a significant portion of this project involves the creation of an information extraction pipeline. The most reliable source of these protocols is the vast body of existing scientific literature. Considering the vastness of current scientific literature, we must focus our efforts in a smaller subsection of the literature, so our strategy focuses on papers associated with the discovery of 3D protein structures. The logic is that the determination of a 3D structure demands the prior successful purification of the protein; thus, such papers almost without exception include a detailed description of the purification process in their methodology sections.
-
-By leveraging the Protein Data Bank (PDB) and its associated APIs, we are able to extract the aforementioned information while systematically linking protein structures, their metadata and their corresponding primary literature (must mention PDB previously for this to make sense TODO!!). The extraction of specific steps from these texts will then provide the necessary ground-truth data which, once pre-processed and structured, will be used to train and validate our model. The final phase of the project will involve the refinement of the surrounding algorithm to integrate these predictions into a more user-friendly tool.
-
-% section work_overview (end)
-
-
-
-%\section{Dealing with Bibliography} % (fold)
-%\label{sec:dealing_with_bibliography}
-%
-%Citing something online~\cite{wiki:shuntingyard,flex,bison}.
-
-% section dealing_with_bibliography (end)
+With this data, we plan to train a predictive model, likely using a Transformer-based architecture due to its strength in generating sequential instructions. We assume that this model will need to be part of a larger algorithm that manages data inputs and ensures the final output is technically consistent. While these later stages remain theoretical, the goal is to produce a tool that translates raw chemical data into a laboratory-ready recipe. By providing this automated starting point, we hope to significantly reduce the manual effort and cost currently required to purify new proteins.
 
 
 \section{Work Done} % (fold)
 \label{sec:work_done}
 
-During the initial preparation phase of this thesis, efforts have been concentrated primarily on the research and implementation of the data mining module. Recognizing that the quality of the final predictive tool is contingent upon the data it is trained on, work was initiated to automate the retrieval of scientific papers and the extraction of relevant biochemical metadata.
+The development of a robust predictive model is fundamentally dependent on the quality and volume of the training data. For this project, the primary objective is to correlate the chemical properties of a protein with its optimal purification strategy. Because no centralized database currently exists that maps these biochemical attributes to specific experimental protocols, a significant portion of the initial work focused on the design and implementation of an automated data mining pipeline.
+
+The pipeline was engineered to identify, retrieve, and process scientific literature to build a structured dataset. This process was divided into four distinct phases:
+\begin{enumerate}
+    \item \textit{Source Identification:} Determining from where we could source protein's purification protocol.
+    \item \textit{Entity Linking:} Mapping specific protein sequences and structures to the papers that describe their purification.
+    \item \textit{Full-text Acquisition:} Automating the retrieval of the complete text of identified papers.
+    \item \textit{Information Extraction:} Processing the unstructured text to isolate chromatography steps and related biochemical metadata.
+\end{enumerate}
+
+\subsection{Determining from where we could source protein's purification protocol}
+
+In order to get a high volume of quality training data, we would need a source of correctly documented protein purification protocols and the proteins they are being applied to. Given that there is no centralized database with such information, and selecting by hand would prove unfeasible, the first step was to find a solution to this problem. In the context of biochemistry, the most comprehensive descriptions of protein purification processes are found within peer-reviewed scientific journals. However, the vast volume of published literature demands a systematic method for identifying relevant documents, as manual selection is not scalable for a dataset of the size required for deep learning.
+
+To solve this, I utilized the Protein Data Bank (PDB) as the primary gateway for data discovery. Each entry in the PDB is typically associated with a primary citation, which is the scientific paper detailing the methods used to determine that specific structure.
+
+The logical basis for this approach is that the determination of a protein's structure requires a highly purified sample. Consequently, the primary citation for a PDB entry almost universally includes a methodology section describing the purification protocol used to reach the required level of purity. At the time of this research, the PDB contained 247,417 entries. While a subset of these entries may lack an associated paper or detailed methodology, the sheer scale of the database provides a sufficient foundation for training a predictive model.
+
+To extract this information programmatically, I interfaced with the PDB API. This allowed for the automated querying of specific metadata fields for every entry in the database. For the current phase, the relevant fields were PDB ID, UniProt ID and the associated paper's bibliographic metadata, such as the DOI, PubMed ID and title.
+
+The UniProt ID is particularly important because it allows us to link the 3D structure in the PDB to the protein it corresponds to. Not only that, since UniProt also provides 
+
+One technical challenge encountered during this phase was the inconsistency of the available metadata. While most entries are complete, a significant number of records lack a PubMed ID or DOI, providing only a publication title. This necessitated the development of a flexible retrieval strategy that could fall back on title-based searches when unique digital identifiers were unavailable, ensuring that the maximum amount of relevant literature could be captured for the next stage of the pipeline.
+
+
+\subsection{Mapping specific protein sequences and structures to the papers that describe their purification}
+
+To gather the most comprehensive metadata possible, my first priority was to establish a reliable link between PDB entries (3D structures) and their corresponding protein's UniProt entry (proteins). While both databases provide APIs that allow for programmatic queries, developing a custom mapping tool from scratch proved to be more complex than initially anticipated.
+
+The primary challenge was the sheer volume of data. With nearly 250,000 entries in the PDB, each potentially mapping to multiple protein chains and UniProt IDs, the number of required requests was massive. Both the PDB and UniProt APIs enforce strict rate limits to ensure server stability. My initial tests showed that attempting to sync these databases live would take an impractical amount of time—potentially days of continuous running—just to establish a baseline mapping. Furthermore, handling the edge cases where one PDB structure corresponds to multiple distinct proteins added significant logic overhead to the scripts.
+
+Recognizing that this manual mapping was becoming a bottleneck, I sought a more efficient alternative. This led me to the European Bioinformatics Institute (EBI) public file server (available at \url{https://ftp.ebi.ac.uk/}). EBI provides precomputed mapping files that are updated weekly, specifically designed to correlate PDB and UniProt entries, along other cross-references.
+
+\subsection{Automating the retrieval of the complete text of identified papers}
+
+Once the relevant scientific citations were identified and linked to their respective proteins, the next objective was to acquire the full text of these papers. This is a critical step because the specific details of a purification protocol, such as the chromatography steps and their order, are almost exclusively contained within the "Materials and Methods" or "Experimental Procedures" sections of a full manuscript, rather than in the abstract.
+
+After evaluating several biological literature repositories, I concluded that the Europe PMC REST API offered the most robust solution for automated full-text acquisition. Europe PMC is particularly advantageous because it provides a centralized access point for a vast collection of scientific literature and offers a dedicated endpoint for retrieving papers in a machine-readable XML format.
+
+While the PDB provides both DOIs and PMIDs, the Europe PMC API is most efficient when queried using the PMID. Consequently, I implemented a preprocessing step to ensure every entry had a valid PMID. In cases where only a DOI was available, I utilized the NCBI ID Converter API to programmatically resolve the DOI into its corresponding PubMed identifier. With a clean list of PMIDs, the pipeline was then able to systematically request the full-text XML for each record.
+
+After evaluating several biological literature repositories, I concluded that the Europe PMC REST API offered the most robust solution for automated full-text acquisition. Europe PMC is particularly advantageous because it provides a centralized access point for a vast collection of life science literature and offers a dedicated endpoint for retrieving papers in a machine-readable XML format.
+
+While the PDB provides both DOIs and PMIDs, the Europe PMC API is most efficient when queried using the PMID. Consequently, I implemented a preprocessing step to ensure every entry had a valid PMID. In cases where only a DOI was available, I utilized the NCBI ID Converter API to programmatically resolve the DOI into its corresponding PubMed identifier. With a clean list of PMIDs, the pipeline was then able to systematically request the full-text XML for each record.
+
+\begin{itemize}
+  \item \textbf{Data Redundancy:} Frequently, multiple PDB entries (representing different structural configurations or mutants of the same protein) reference the exact same primary citation. While not an error, the pipeline had to be optimized to recognize these duplicates to avoid redundant API calls and unnecessary storage use.
+  \item \textbf{The Open Access Barrier:} The most significant hurdle is that not all papers are available in the Europe PMC Open Access subset. Many journals remain behind paywalls, meaning the API can only return the abstract or metadata rather than the complete methodology.
+  \item \textbf{Missing Identifiers:} For some older or more obscure PDB entries, neither a DOI nor a PMID is recorded. Without these unique identifiers, automated retrieval becomes significantly more difficult, often requiring title-based fuzzy matching which is less reliable.
+  \item \textbf{Inconsistent Availability:} In some instances, a record might exist in the database, but the full-text version has not been deposited or processed into the XML format required by our extraction tools.
+\end{itemize}
+
+\subsection{Processing the unstructured text to isolate chromatography steps and related biochemical metadata}
+
+The final and most complex phase of the pipeline involves transforming the retrieved full-text papers into a structured sequence of purification steps. Having the papers in XML format, as provided by the Europe PMC API, proved to be a significant advantage. Unlike PDFs, which are notoriously difficult to parse due to inconsistent layouts, XML documents use standardized tags to identify specific sections, titles, and paragraphs. This structure allowed me to programmatically navigate the document and isolate the most relevant portions of the text.
+
+In the early stages of development, I needed a simple and reliable way to identify where the purification process was described within a paper. After analyzing the structure of several dozen documents, I found that two primary indicators were highly effective:
+\begin{enumerate} 
+  \item Searching for the keyword "Purification" within subsection titles (e.g., \textit{<title>Protein expression and purification</title>}). 
+  \item Identifying paragraphs in the main body that contained the term "chromatography." 
+\end{enumerate}
+
+While this approach was successful for locating the general area of interest during preliminary tests, it was not sufficient for our ultimate goal. The specific steps, the tools being used, their sizes, concentrations and other parameters and their order are extremely important to systemically define each purification protocol, so we had to refine our approach.
+
+For this, I leveraged the fact that protein purification is a specialized field with a relatively finite set of techniques. Most protocols follow a logical progression using a limited number of standard methods, such as Affinity Chromatography, Ion Exchange, or Size Exclusion.
+
+By recognizing this pattern, I developed a comprehensive dictionary of chromatography terms, tools, and specific biochemical markers (such as "His-tag," "IMAC," "gradient elution," or "superdex"). The underlying logic is that these technical terms are highly specific; they are rarely mentioned in biological literature outside the context of an actual purification protocol.
+
+The current version of the tool scans the identified "Purification" sections and extracts these terms in the order they appear. By capturing this sequence, the pipeline theoretically reconstructs the "recipe" used in the laboratory. For example, if the tool detects "Affinity Chromatography" followed by "Dialysis" and then "Gel Filtration," it records these as three distinct chronological steps.
+
+This methodology is currently a work in progress. While the dictionary-based approach provides a structured way to handle unstructured text, it is not yet perfect. Scientific writing can be nuanced, and the tool must be able to distinguish between a technique that was actually performed and one that is merely being discussed or referenced.
+
+At this stage, I have not yet produced definitive preliminary results from this extraction phase. It remains an iterative process, and I expect to refine the dictionary and the extraction logic as I begin to validate the output against known manual protocols.
 
 % section work_done (end)
 
