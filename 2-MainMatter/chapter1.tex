@@ -11,8 +11,6 @@
 \chapter{Introduction}
 \label{cha:introduction}
 
-% maybe split this into different subsections of each area (biology, chemistry, informatics)
-
 \section{Historical context}
 \label{sec:a_bit_of_history}
 
@@ -33,15 +31,17 @@ Consequently, the purification of "non-tagged" proteins remains the gold standar
 \section{Motivation}
 \label{sec:motivation}
 
-Expand on why we are doing this/its important.
+Despite more than a century of methodological advances, protein purification remains a major bottleneck in both basic research and industrial biotechnology. While expression systems and analytical techniques have become increasingly standardized, the design of purification protocols (particularly for non-tagged proteins) continues to rely heavily on empirical optimization. In practice, this often involves iterative testing of chromatography media, buffer compositions, and elution conditions, guided primarily by expert intuition and prior experience rather than formalized predictive principles.
 
-Designing a protein purification protocol is currently a time and resource consuming process defined by significant trial and error. When working with a protein that lacks an established protocol, scientist must often commit substantial time and financial resources to discover an effective sequence of techniques. Our work aims to bridge this gap by creating a system that predicts these protocols using only basic biochemical information.
+This trial-and-error paradigm has several limitations. It is time-consuming, costly in terms of reagents and labor, and poorly scalable when applied to large numbers of proteins, such as those emerging from modern genomics and structural biology initiatives, like \textit{AlphaFold}, a deep learning model that predicts protein structures.
+
+Recent advances in machine learning, particularly sequence-based modeling and natural language processing, provide an opportunity to address this gap. Large public repositories such as the Protein Data Bank implicitly encode decades of successful purification efforts, while full-text biomedical literature contains detailed experimental protocols that are now accessible in machine-readable form. Leveraging these resources makes it possible to shift from heuristic-driven protocol design toward data-driven prediction. The motivation of this work is therefore to formalize and learn from historical purification knowledge, transforming it into a predictive framework that can assist scientists at the earliest stages of protein purification.
 
 \section{Goal}
 \label{sec:goal}
 
-Expand and give some details on what the goal of the final "product" will be and the success metrics.
+The primary goal of this dissertation is to develop a computational system capable of predicting protein purification protocols directly from primary sequence data and derived physico-chemical properties into an ordered, laboratory-ready purification recipe composed of chromatography steps and associated techniques, reflecting strategies that have been validated in prior experimental work.
 
-The goal is to produce a tool that translates raw protein sequence data into a laboratory-ready recipe. By providing this automated starting point, we hope to significantly reduce the manual effort, time and cost currently required to purify new proteins.
+To achieve this, the project aims to integrate large-scale data mining from structural databases and the biomedical literature with a Transformer-based model architecture designed for sequential instruction prediction. The expected output is not a single optimized protocol, but a plausible and informative starting strategy that can guide experimental design and reduce the search space explored during laboratory optimization.
 
 \newcommand{\Overleaf}{\href{https://www.overleaf.com?r=f5160636&rm=d&rs=b}{Overleaf}}

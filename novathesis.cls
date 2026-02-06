@@ -1325,14 +1325,14 @@
     bib;             % Print the bibliography.  Change to
      %    “bib[title=⟨title⟩]” to redefine the title!
     appendices;      % Print appendices; if any!
-    annexes;         % Print annexes; if any!
+    %annexes;         % Print annexes; if any!
   }%
 }{%
   \printorder(backmatter):={
     \printbibliography[nottype=online]; % Print the bibliography.
     \printbibliography[title=\option{/novathesis/print/webography},type=online]; % Print the bibliography.
     appendices; % Print appendices, if any!
-    annexes; % Print annexes, if any!
+    %annexes; % Print annexes, if any!
   }%
 }
 % \ifoptionequal{/novathesis/print/webography}{}{%
@@ -2695,23 +2695,6 @@
   }{}%
 }
 
-\newcommand*{\ntprintannexes}{%
-  \iffileadded{annex}{%
-    % \renewcommand{\appendixtocname}{\translate{Annexes}}%
-    \renewcommand{\appendixtocname}{\annexplname}%
-    \annex\addappheadtotoc%
-    \@nt@foralllist{file}{annex}{\@ntloadfiles@ii{annex}}%
-  }{}%
-}
-
-\ifdef{\annexcounter}{}{\def\annexcounter{\old@Roman}}
-\newcommand*{\annex}{%
-  \xdef\Hy@chapapp{annex}%
-  \setcounter{chapter}{0}%
-  \setcounter{section}{0}%
-  \gdef\@chapapp{\translate{annex}}%
-  \gdef\thechapter{\annexcounter\c@chapter}%
-}%
 
 
 

@@ -8,34 +8,15 @@
 
 \typeout{NT FILE abstract-en.tex}%
 
-Protein purification is vital for protein biology studies, yet optimizing these purification methods can be time-consuming because of variations in the techniques and protocol steps necessary for each new protein that have to be determined experimentally through trial and error. Previous works have focused on creating a database of protein purification conditions and using LLMs to extract relevant information from articles. The development of Protein Language Models. In recent years, several Protein Language Models have been proposed which could also be used to learn useful representations of proteins.
+Protein purification is vital for protein biology studies and biopharmaceuticals production. Yet, optimizing these purification methods can be time-consuming because of variations in the techniques and protocol steps necessary for each new protein that have to be determined experimentally through trial and error.
 
-This project proposes an approach to predict a purification protocol for new proteins, based on information extracted from the literature. By combining chemical properties of proteins with information extracted from papers describing purification protocols of those same proteins, we aim to train a model that can do this task efficiently in order to reduce the effort necessary to purify new proteins.
+This project proposes an approach to predict a purification protocol for new proteins, based on information extracted from peer-reviewed literature. By combining physico-chemical properties of proteins with information extracted from papers describing purification protocols of those same proteins, we aim to train a model that can efficiently predict a sequence of purification steps, reducing the effort necessary to purify new proteins.
 
-%\begin{verbatim}
-%\ntsetup{abstractorder={<LANG_1>,...,<LANG_N>}}
-%    \ntsetup{abstractorder={<MAIN_LANG>={<LANG_1>,...,<LANG_N>}}}
-%\end{verbatim}
-%
-%For example, for a main document written in German with abstracts written in German, English and Italian (by this order) use:
-%\begin{verbatim}
-%    \ntsetup{abstractorder={de={de,en,it}}}
-%\end{verbatim}
-%
-%Concerning its contents, the abstracts should not exceed one page and may answer the following questions (it is essential to adapt to the usual practices of your scientific area):
-%
-%\begin{enumerate}
-%  \item What is the problem?
-%  \item Why is this problem interesting/challenging?
-%  \item What is the proposed approach/solution/contribution?
-%  \item What results (implications/consequences) from the solution?
-%\end{enumerate}
-%
+The first step of this project is to create a data extraction tool that allows us to compile a database of proteins, their physico-chemical properties and their purification processes. An initial prototype has been developed in this phase to attempt to extract purification protocols from scientific literature. The second step is using the data we extracted to train a model to predict the purification process of a given protein. We discuss both of these steps in this work, with their success measured by the efficiency and accuracy of the predictions. By achieving our goal, we would be able to lower costs, chemical waste and time consumed in the discovery of added value proteins.
+
 % Abstract keywords
 \keywords{
-  One keyword \and
-  Another keyword \and
-  Yet another keyword \and
-  One keyword more \and
-  The last keyword
+  Information Extraction \and
+  Natural Language Processing \and
+  Cheminformatics
 }
