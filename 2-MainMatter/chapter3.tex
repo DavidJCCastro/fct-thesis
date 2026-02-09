@@ -28,7 +28,7 @@ This chapter aims at defining the scope of our work, what our goal is, the plan 
 
 At this stage, we have developed a data extraction tool to build the necessary foundation for such a system. This tool leverages the Protein Data Bank (PDB) to identify proteins with known 3D structures and then targets their associated scientific literature. We operate on the logic that a protein must be successfully purified before its structure can be experimentally determined, so these papers represent a reliable source of proven purification methodologies.
 
-With this data, we plan to train a predictive model, using a Transformer-based architecture due to its strength in generating sequential instructions. We assume that this model will need to be part of a larger algorithm that manages data inputs and ensures the final output is technically consistent. These later stages remain theoretical and will be discussed further in the future work plane section.
+With this data, we plan to train a predictive model, using a Transformer-based architecture due to its strength in generating sequential instructions. This model will need to be part of a larger pipeline that manages data inputs and ensures the final output is technically consistent. These later stages remain theoretical and will be discussed further in the future work plan section.
 
 
 \section{Work Done} % (fold)
@@ -39,7 +39,7 @@ The development of a robust predictive model is fundamentally dependent on the q
 The pipeline was engineered to identify, retrieve, and process scientific literature to build a structured dataset. This process was divided into four distinct phases:
 \begin{enumerate}
     \item \textit{Source Identification:} Determining from where we could source protein purification protocols.
-    \item \textit{Entity Linking:} Mapping specific protein sequences and structures to the papers that describe their purification.
+    \item \textit{Document Linking:} Mapping specific protein sequences and structures to the papers that describe their purification.
     \item \textit{Full-text Retrieval:} Automating the retrieval of the complete text of identified papers.
     \item \textit{Information Extraction:} Processing the unstructured text to isolate chromatography steps and related biochemical metadata.
 \end{enumerate}
@@ -62,7 +62,7 @@ To gather the most comprehensive metadata possible, my first priority was to est
 
 The primary challenge was the sheer volume of data. With nearly 250,000 entries in the PDB, each potentially mapping to multiple protein chains and UniProt IDs, the number of required requests was massive. Both the PDB and UniProt APIs enforce strict rate limits to ensure server stability. Considering this, we selected the 200 first entries we get from PDB's API to run our tests on.
 
-In figure~\ref{fig:old_viz} we have a diagram illustrating our initial setup for the data extraction. We start by fetching PDB entries by querying its API. Most PDB entries link to one or more UniProt IDs, which identify the specific proteins contained in that structure, so we use those IDs to query UniProt's API. With UniProt's data we are able to complete our ID mapping, leaving just the full-text of the paper corresponding to that protein missing. This is primarily obtained through the PubMed Central's ID present in the PDB, which allows us to query Europe PMC's\footnote{\url{https://europepmc.org/}} API for the full-text of the respective paper. Finally, we would need to apply text mining logic to the resulting XMLs to extract the purification processes. This last part was not yet flushed out by this point.
+In Figure~\ref{fig:old_viz} we have a diagram illustrating our initial setup for the data extraction. We start by fetching PDB entries by querying its API. Most PDB entries link to one or more UniProt IDs, which identify the specific proteins contained in that structure, so we use those IDs to query UniProt's API. With UniProt's data we are able to complete our ID mapping, leaving just the full-text of the paper corresponding to that protein missing. This is primarily obtained through the PubMed Central's ID present in the PDB, which allows us to query Europe PMC's\footnote{\url{https://europepmc.org/}} API for the full-text of the respective paper. Finally, we would need to apply text mining logic to the resulting XMLs to extract the purification processes. This last part was not yet flushed out by this point.
 
 \begin{figure}[htbp]
   \centering
@@ -73,7 +73,7 @@ In figure~\ref{fig:old_viz} we have a diagram illustrating our initial setup for
 
 My initial tests showed that attempting to complete sync both databases would take an impractical amount of time—potentially days of continuous running—just to establish a baseline mapping. Furthermore, handling the edge cases where one PDB structure corresponds to multiple distinct proteins added significant logic overhead to the scripts.
 
-Recognizing that this manual mapping was becoming a bottleneck, I sought a more efficient alternative. This led me to the European Bioinformatics Institute (EBI) public file server\footnote{\url{https://ftp.ebi.ac.uk/}}. EBI provides precomputed mapping files that are updated weekly, specifically designed to correlate PDB and UniProt entries, along other cross-references. In figure~\ref{fig:new_viz} we have the update diagram representing this change.
+Recognizing that this manual mapping was becoming a bottleneck, I sought a more efficient alternative. This led me to the European Bioinformatics Institute (EBI) public file server\footnote{\url{https://ftp.ebi.ac.uk/}}. EBI provides precomputed mapping files that are updated weekly, specifically designed to correlate PDB and UniProt entries, along other cross-references. In Figure~\ref{fig:new_viz} we have the update diagram representing this change.
 
 \begin{figure}[htbp]
   \centering
@@ -82,7 +82,7 @@ Recognizing that this manual mapping was becoming a bottleneck, I sought a more 
   \label{fig:new_viz}
 \end{figure}
 
-Having this simplified mapping allowed us to create better visualizations of the data, such as the distribution of PDB and UniProt IDs that we see in figure~\ref{fig:mapping_distribution}.
+Having this simplified mapping allowed us to create better visualizations of the data, such as the distribution of PDB and UniProt IDs that we see in Figure~\ref{fig:mapping_distribution}.
 
 \begin{figure}[htbp]
   \centering
@@ -115,13 +115,13 @@ After evaluating several biological literature repositories, I concluded that th
 One technical challenge encountered during this phase was the inconsistency of the available metadata. While most entries are complete, a significant number of records lack a PubMed ID or DOI, providing only a publication title. This demanded the development of a flexible retrieval strategy that could fall back on title-based searches when unique digital identifiers were unavailable, ensuring that the maximum amount of relevant literature could be captured for the next stage of the pipeline. The following issues were identified:
 
 \begin{itemize}
-  \item \textbf{Data Redundancy:} Frequently, multiple PDB entries (representing different structural configurations or mutants of the same protein) reference the exact same primary citation. While not an error, the pipeline had to be optimized to recognize these duplicates to avoid redundant API calls and unnecessary storage use.
-  \item \textbf{The Open Access Barrier:} The most significant hurdle is that not all papers are available in the Europe PMC Open Access subset. Many papers remain behind paywalls, meaning the API can only return the abstract or metadata rather than the complete paper.
-  \item \textbf{Missing Identifiers:} For some older or more obscure PDB entries, neither a DOI nor a PMID is recorded. Without these unique identifiers, automated retrieval becomes significantly more difficult, often requiring title-based fuzzy matching which is less reliable.
-  \item \textbf{Inconsistent Availability:} In some instances, a record might exist in the database, but the full-text version has not been deposited or processed into the XML format required by our extraction tools.
+  \item \textbf{Repeated PMIDs:} Frequently, multiple PDB entries (representing different structural configurations or mutants of the same protein) reference the exact same primary citation. While not an error, the pipeline had to be optimized to recognize these duplicates to avoid redundant API calls and unnecessary storage use.
+  \item \textbf{Not open access:} The most significant hurdle is that not all papers are available in the Europe PMC Open Access subset. Many papers remain behind paywalls, meaning the API can only return the abstract or metadata rather than the complete paper.
+  \item \textbf{No citation available:} For some older or more obscure PDB entries, neither a DOI nor a PMID is recorded. Without these unique identifiers, automated retrieval becomes significantly more difficult, often requiring title-based fuzzy matching which is less reliable.
+  \item \textbf{Failed to get full text:} In some instances, a record might exist in the database, but the full-text version has not been deposited or processed into the XML format required by our extraction tools.
 \end{itemize}
 
-Given the size of the full mapping and the databases we query, using every entry for testing purposes would take a prohibitive amount of time and compute, so a small subset of the first 200 entries was used instead. In figure~\ref{fig:sankey_result} we see the results for this phase.
+Given the size of the full mapping and the databases we query, using every entry for testing purposes would take a prohibitive amount of time and compute, so a small subset of the first 200 entries was used instead. In Figure~\ref{fig:sankey_result} we see the results for this phase.
 
 \begin{figure}[htbp]
   \centering
@@ -129,6 +129,12 @@ Given the size of the full mapping and the databases we query, using every entry
   \caption{Results Sankey Diagram}
   \label{fig:sankey_result}
 \end{figure}
+
+Each arm of the sankey diagram represents a different error received by the data extraction tool, but upon closer inspection the cases where we received an empty result was actually due to lack of open access. Considering this, the main problem was the lack of open access to papers (20\%), followed by the lack of citations in PDB (19.5\%). 
+
+Many PDB entries cite the same primary publication because a single study often reports the experimental determination of multiple protein structures. As a result, the same PMID frequently appears across multiple entries, leading to repeated PMIDs in our dataset (18.5\% of examples). Extracting a single protein purification protocol from unstructured text is already challenging; extracting multiple distinct protocols from the same source and correctly associating each with its corresponding protein will be substantially more difficult. Nevertheless, we anticipate that with the employment of more advanced NLP methods, particularly the use of LLMs, we will be able to achieve a high success rate.
+
+Although repeated PMIDs are challenging to handle, they correspond to successful full-text extractions and, together with the other successful cases, yield an overall success rate of 52.5\%. If this rate were to hold across the more than 249,000 PDB entries, we could, in principle, compile up to approximately 130,000 distinct protein purification protocols, assuming a 100\% success rate in protocol extraction and ignoring potential duplicates.
 
 \subsection{Processing the unstructured text to isolate chromatography steps and related biochemical metadata}
 
@@ -144,7 +150,7 @@ While this approach was successful for locating the general area of interest dur
 
 For this, I leveraged the fact that protein purification is a specialized field with a relatively finite set of techniques. Most protocols follow a logical progression using a limited number of standard methods, such as Affinity Chromatography, Ion Exchange, or Size Exclusion.
 
-By recognizing this pattern, I developed a comprehensive dictionary of chromatography terms, tools, and specific biochemical markers (such as "His-tag," "IMAC," "gradient elution," or "superdex"). The underlying logic is that these technical terms are highly specific; they are rarely mentioned in biological literature outside the context of an actual purification protocol. In figure~\ref{fig:chrom_techniques} we can see an example of the keywords' hierarchy for the "Size Exclusion" technique category.
+By recognizing this pattern, I developed a comprehensive dictionary of chromatography terms, tools, and specific biochemical markers (such as "His-tag," "IMAC," "gradient elution," or "superdex"). The underlying logic is that these technical terms are highly specific; they are rarely mentioned in biological literature outside the context of an actual purification protocol. In Figure~\ref{fig:chrom_techniques} we can see an example of the keywords' hierarchy for the "Size Exclusion" technique category.
 
 \begin{figure}[htbp]
   \centering
@@ -177,16 +183,20 @@ While substantial progress has been made on the data mining pipeline, significan
 
 \subsection{Data Collection and Validation}
 
-Three interdependent tasks will complete the data mining phase: finalizing the extraction script, validating its output, and executing it on the full dataset. Currently, the pipeline processes only 200 PDB–UniProt entries for testing purposes, as processing the complete dataset during development would be computationally prohibitive.
+Three interdependent subtasks will complete the data mining phase: finalizing the extraction script, validating its output, and executing it on the full dataset. Currently, the pipeline processes only 200 PDB--UniProt entries for testing purposes, as processing the complete dataset during development would be computationally prohibitive.
 
-The overlapping nature of these tasks reflects the iterative development process inherent to data mining tools. Script refinement proceeds through cycles of execution, error identification, and correction. Validation will involve systematic verification of extracted protocols against source publications and identifying gaps in the extraction logic that require adjustment. Once validation confirms acceptable accuracy, the pipeline will be scaled to the complete dataset, with ongoing validation to address any previously undetected edge cases.
+The overlapping nature of these subtasks reflects the iterative development process inherent to data mining tools. Script refinement proceeds through cycles of execution, error identification, and correction. Validation will involve systematic verification of extracted protocols against source publications and identifying gaps in the extraction logic that require adjustment. Once validation confirms acceptable accuracy, the pipeline will be scaled to the complete dataset, with ongoing validation to address any previously undetected edge cases.
 
 
 \subsection{Predictive Model Development}
 
-Model development comprises several interconnected phases. Initial work will focus on architecture design, involving the evaluation of alternative Transformer configurations based on sequence modeling requirements, attention mechanisms, and the vocabulary of chromatography techniques.
+Model development comprises several interconnected subtasks. Initial work will focus on architecture design, involving the evaluation of alternative Transformer configurations based on sequence modeling requirements, attention mechanisms, and the vocabulary of chromatography techniques, as seen in Appendix~\ref{app:appendix}.
 
-The training phase represents the most resource-intensive component of the project. Beyond the computational demands of model training itself, this period encompasses the development of data preprocessing pipelines, implementation of the wrapper algorithm, and iterative refinement based on preliminary results. The wrapper algorithm serves as a gap filling layer that addresses practical limitations of the model, handling tasks such as input normalization, output formatting and constraint enforcement to maximize the generated protocols' usefulness.
+The training phase represents the most resource-intensive component of the project. Beyond the computational demands of model training itself, this period encompasses the development of data preprocessing pipelines, implementation of the wrapper algorithm, and iterative refinement based on preliminary results. The wrapper algorithm serves as a gap filling layer that addresses practical limitations of the model, handling tasks such as input normalization, output formatting and constraint enforcement to maximize the generated protocols' usefulness, resulting in a complete end-to-end tool.
+
+\subsection{Results Analysis}
+
+Once the development of the predictive model is mostly finished, we will enter a phase of result analysis and validation. During this phase we will apply our tool to specific case studies and perform a formal qualitative evaluation. Depending on the outcome, some changes may still be applied, but we expect to have a mostly finished tool by this point, so they should be minor. Finally, we will proceed with the publication of the code and model.
 
 % section future_work_plan (end)
 

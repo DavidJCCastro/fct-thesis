@@ -11,22 +11,54 @@
 \chapter{Introduction}
 \label{cha:introduction}
 
-\section{Historical context}
-\label{sec:a_bit_of_history}
+\section{Protein Purification}
 
-\ntindex[Historical context]{}
+In order to better understand the goal of this project, we must first understand how protein purification works. Protein purification is the process of isolating a specific protein of interest from a complex biological mixture, such as a cell lysate or a tissue sample. The objective is to remove all non-protein contaminants and other undesirable proteins while maintaining the biological activity and structural integrity of the target molecule.
 
-The history of protein purification is intrinsically linked to our understanding of life at the molecular level. This journey began in 1789 when Antoine Fourcroy first distinguished several types of complex organic substances, which he categorized as "albumins," including fibrin, gelatin, and gluten. Although these substances were not yet recognized as proteins, their consistent presence in biological processes made them a primary focus for early chemists. The identification of the building blocks of these substances was a slow process; while asparagine was the first amino acid isolated in 1809, its role as a fundamental constituent of proteins was not fully established until 1873. A critical link was formed earlier, in 1819, with the isolation of leucine, which helped researchers begin to understand the chemical nature of these "albuminous" materials.
+The primary challenge in this field lies in the immense diversity of proteins. Every protein possesses a unique combination of physico-chemical properties, including molecular weight, net charge, surface hydrophobicity, and specific binding affinities. Because these characteristics vary significantly even between similar proteins, there is no universal "one-size-fits-all" protocol. For proteins that do not yet have an established protocol, researchers must rely on a labor-intensive "trial and error" approach. This involves testing various experimental conditions and chemical buffers, which is both time-consuming and resource-heavy, often becoming a bottleneck in biochemical research.
 
-By 1837, Gerrit J. Mulder determined the elemental composition of several proteins and proposed that they shared a common core substance. In response to these findings, Jacob Berzelius suggested the name "protein" in 1838, derived from the Greek word \textit{proteios}, meaning "primary" or "of the first rank." Despite this naming, the chemical diversity of proteins remained largely unknown; at the time, only glycine and leucine had been identified. It would take nearly another century, until the discovery of threonine in 1936, for the complete set of 20 standard amino acids to be recognized.
+To achieve high levels of purity, laboratory workflows rely almost exclusively on liquid chromatography. Chromatography techniques function by passing a mobile phase containing the protein mixture through a stationary phase. The components of the mixture are separated based on how they interact with the stationary phase:
 
-A defining moment in the field occurred in 1926, amidst a heated debate over whether enzymes were distinct chemical entities or simply "catalytic forces" associated with proteins. James Sumner settled this by isolating and crystallizing the enzyme urease from jack beans. This achievement provided the first definitive proof that enzymes were proteins with specific, defined chemical structures that could be purified to homogeneity. Sumner's work, which earned him the Nobel Prize in 1946, effectively birthed the field of structural biochemistry and established purification as a prerequisite for understanding protein function.
+\begin{itemize}
+  \item \textbf{Affinity:} Based on specific biological interactions between the protein and a ligand.
+  \item \textbf{Size Exclusion:} Based on the physical dimensions and shape of the molecule.
+  \item \textbf{Ion Exchange:} Based on the net surface charge of the protein. 
+  \item \textbf{Hydrophobic Interaction:} Based on the distribution of non-polar groups on the protein surface.
+\end{itemize}
 
-In the decades following Sumner's breakthrough, the field saw the development of diverse biophysical techniques designed to separate proteins based on their intrinsic properties, such as electrical charge, molecular size, and polarity. These methods—including various forms of chromatography and electrophoresis—became the standard toolkit for biochemists. The landscape of protein science changed again in 1973, when Stanley Cohen and Herbert Boyer developed recombinant DNA technology. This allowed scientists to insert specific DNA sequences into host organisms like \textit{E. coli}, turning bacteria into "factories" for the mass production of specific proteins.
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{diagrams/Affinity-Chromatography.png}
+        \caption{Affinity \cite{chrom_figure_1}}
+        \label{fig:sub1}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{diagrams/Size-Exclusion-Chromatography.png}
+        \caption{Size Exclusion \cite{chrom_figure_2}}
+        \label{fig:sub2}
+    \end{subfigure}
+    
+    \vspace{1em}
+    
+    \begin{subfigure}[b]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{diagrams/Ion-Exchange-Chromatography.png}
+        \caption{Ion Exchange \cite{chrom_figure_3}}
+        \label{fig:sub3}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{diagrams/Hydrophobic-Interaction-Chromatography.png}
+        \caption{Hydrophobic Interaction \cite{chrom_figure_4}}
+        \label{fig:sub4}
+    \end{subfigure}
+    
+    \caption{Visualizations for the different types of chromatography}
+    \label{fig:chrom_vizs}
+\end{figure}
 
-While recombinant technology solved the problem of protein "sourcing," it introduced new challenges for purification. In the 1980s, the development of affinity tags (such as the polyhistidine tag or GST-tag) revolutionized the field by allowing researchers to add a universal "handle" to any recombinant protein. This made purification significantly easier and more predictable. However, these tags can often interfere with the protein's native folding, biological activity, or its suitability for therapeutic use in humans. 
-
-Consequently, the purification of "non-tagged" proteins remains the gold standard for many high-precision applications. Because every non-tagged protein has a unique combination of surface charges and hydrophobic patches, designing an effective purification protocol remains a labor-intensive process of trial and error. This historical difficulty is the primary driver for the current research, as we seek to automate the design of these complex protocols through computational modeling. We have not yet discarded the possiblity of increasing the scope of our project to include tagged proteins, however it is currently hung up on analysis of our preliminary results.
+In practice, a single step is rarely sufficient. A complete purification protocol is a chronological sequence of these techniques, organized to progressively refine the sample. These multi-step sequences form the purification protocols that this project aims to be able to predict.
 
 \section{Motivation}
 \label{sec:motivation}
@@ -35,13 +67,11 @@ Despite more than a century of methodological advances, protein purification rem
 
 This trial-and-error paradigm has several limitations. It is time-consuming, costly in terms of reagents and labor, and poorly scalable when applied to large numbers of proteins, such as those emerging from modern genomics and structural biology initiatives, like \textit{AlphaFold}, a deep learning model that predicts protein structures.
 
-Recent advances in machine learning, particularly sequence-based modeling and natural language processing, provide an opportunity to address this gap. Large public repositories such as the Protein Data Bank implicitly encode decades of successful purification efforts, while full-text biomedical literature contains detailed experimental protocols that are now accessible in machine-readable form. Leveraging these resources makes it possible to shift from heuristic-driven protocol design toward data-driven prediction. The motivation of this work is therefore to formalize and learn from historical purification knowledge, transforming it into a predictive framework that can assist scientists at the earliest stages of protein purification.
+Recent advances in machine learning, particularly sequence-based modeling and natural language processing, provide an opportunity to address this gap. Large public repositories such as the Protein Data Bank implicitly encode decades of successful purification efforts, while biomedical literature contains detailed experimental protocols that are now accessible in machine-readable form. We hope that by leveraging these resources we can accelerate the discovery of protein purification protocols using deep learning tools and techniques.
 
 \section{Goal}
 \label{sec:goal}
 
-The primary goal of this dissertation is to develop a computational system capable of predicting protein purification protocols directly from primary sequence data and derived physico-chemical properties into an ordered, laboratory-ready purification recipe composed of chromatography steps and associated techniques, reflecting strategies that have been validated in prior experimental work.
+The primary goal of this dissertation is to develop a computational system capable of predicting protein purification protocols directly from protein sequence data and derived physico-chemical properties into an ordered, laboratory-ready purification recipe composed of chromatography steps and associated techniques, reflecting strategies that have been validated in prior experimental work.
 
-To achieve this, the project aims to integrate large-scale data mining from structural databases and the biomedical literature with a Transformer-based model architecture designed for sequential instruction prediction. The expected output is not a single optimized protocol, but a plausible and informative starting strategy that can guide experimental design and reduce the search space explored during laboratory optimization.
-
-\newcommand{\Overleaf}{\href{https://www.overleaf.com?r=f5160636&rm=d&rs=b}{Overleaf}}
+To achieve this, the project aims to integrate large-scale data mining from structural databases and the biomedical literature with a Transformer-based model architecture designed for sequential purification protocol prediction. The expected output is not a single optimized protocol, but a plausible and informative starting strategy that can guide experimental design and reduce the search space explored during laboratory optimization.
