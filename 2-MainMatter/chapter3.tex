@@ -67,7 +67,7 @@ In Figure~\ref{fig:old_viz} we have a diagram illustrating our initial setup for
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=\linewidth]{diagrams/old_viz}
-  \caption[Diagram of Old Method of Information Extraction]{The PDB query handler queries the PDB API for its data, resulting in a dictionary of data of the structures. The PDB data contains UniProt IDs, which we use to map structures to their corresponding proteins. Finally, we use the PDB's primary citation information to query Europe PMC's API for the full-text of the paper, which we use to extract the protein's purification protocol.}
+  \caption[Diagram of Old Method of Information Extraction]{Diagram of Old Method of Information Extraction. The PDB query handler queries the PDB API for its data, resulting in a dictionary of data of the structures. The PDB data contains UniProt IDs, which we use to map structures to their corresponding proteins. Finally, we use the PDB's primary citation information to query Europe PMC's API for the full-text of the paper, which we use to extract the protein's purification protocol.}
   \label{fig:old_viz}
 \end{figure}
 
@@ -78,7 +78,7 @@ Recognizing that this manual mapping was becoming a bottleneck, I sought a more 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=\linewidth]{diagrams/new_viz}
-  \caption[Diagram of New Method of Information Extraction]{In the new method of information extraction the mapping between a UniProt ID and a PDB ID is downloaded from EBI's website. Thanks to this, all we have to do is fetch the primary citation information for each PDB entry and fetch the paper full-text from EuropePMC.}
+  \caption[Diagram of New Method of Information Extraction]{Diagram of New Method of Information Extraction. In the new method of information extraction the mapping between a UniProt ID and a PDB ID is downloaded from EBI's website. Thanks to this, all we have to do is fetch the primary citation information for each PDB entry and fetch the paper full-text from EuropePMC.}
   \label{fig:new_viz}
 \end{figure}
 
@@ -103,7 +103,7 @@ Having this simplified mapping allowed us to create better visualizations of the
 
 
 \subsection{Automating the retrieval of the complete text of identified papers}
-
+\label{sec:retrieval_sec}
 Once the relevant scientific citations were identified and linked to their respective proteins, the next objective was to acquire the full text of these papers. This is a critical step because the specific details of a purification protocol, such as the chromatography steps and their order, are almost exclusively contained within the "Materials and Methods" or "Experimental Procedures" sections of a full manuscript, rather than in the abstract.
 
 After evaluating several biological literature repositories, I concluded that the Europe PMC REST API offered the most robust solution for automated full-text acquisition. Europe PMC is particularly advantageous because it provides a centralized access point for a vast collection of scientific literature and offers a dedicated endpoint for retrieving papers in a machine-readable XML format.
@@ -126,7 +126,7 @@ Given the size of the full mapping and the databases we query, using every entry
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=\linewidth]{diagrams/sankey_result}
-  \caption{Selected Papers Full-Text Extraction Results Sankey Diagram}
+  \caption[Sankey Diagram of the Results of the Full-Text Extraction Algorithm]{Sankey Diagram of the Results of the Full-Text Extraction Algorithm. These results correspond to the papers associated to the 200 proteins we selected and their outcomes are explained in Section \ref{sec:retrieval_sec}.}
   \label{fig:sankey_result}
 \end{figure}
 
