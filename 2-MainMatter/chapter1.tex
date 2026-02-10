@@ -13,11 +13,15 @@
 
 \section{Protein Purification}
 
-In order to better understand the goal of this project, we must first understand how protein purification works. Protein purification is the process of isolating a specific protein of interest from a complex biological mixture, such as a cell lysate or a tissue sample. The objective is to remove all non-protein contaminants and other undesirable proteins while maintaining the biological activity and structural integrity of the target molecule.
+Proteins are essential molecules that perform a vast range of critical functions in all living organisms. The ability to isolate these molecules is a fundamental requirement for progress in many scientific and industrial fields, including medical research and the development of new biopharmaceuticals ~\cite{du2022progress}. Because proteins naturally exist within complex biological environments, they must be separated from other cellular components before they can be studied or used effectively, therefore, obtaining a pure sample is a vital step in biotechnology. The speed and success of many scientific advancements depend on the efficiency of this isolation process.
+
+Protein purification is the process of isolating a specific protein of interest from a complex biological mixture, such as a cell lysate or a tissue sample. The objective is to remove all non-protein contaminants and other undesirable proteins while maintaining the biological activity and structural integrity of the target molecule.
 
 The primary challenge in this field lies in the immense diversity of proteins. Every protein possesses a unique combination of physico-chemical properties, including molecular weight, net charge, surface hydrophobicity, and specific binding affinities. Because these characteristics vary significantly even between similar proteins, there is no universal "one-size-fits-all" protocol. For proteins that do not yet have an established protocol, researchers must rely on a labor-intensive "trial and error" approach. This involves testing various experimental conditions and chemical buffers, which is both time-consuming and resource-heavy, often becoming a bottleneck in biochemical research.
 
-To achieve high levels of purity, laboratory workflows rely almost exclusively on liquid chromatography. Chromatography techniques function by passing a mobile phase containing the protein mixture through a stationary phase. The components of the mixture are separated based on how they interact with the stationary phase:
+A common strategy used to simplify this process is the use of affinity tags. Affinity tags are short amino acid sequences or proteins genetically fused to the target molecule that act as standardized "handles", providing a predictable way to bind the protein to a purification resin, allowing for efficient separation based on the tag's known chemical affinity. This does however come at a price, since tags can lead to interference with a protein's function \cite{doi:10.1021/acsomega.7b01598}.
+
+To achieve high levels of purity, laboratory workflows rely almost exclusively on liquid chromatography. Chromatography techniques function by passing a mobile phase containing the protein mixture through a stationary phase. The components of the mixture are separated based on how they interact with the stationary phase (see Figure~\ref{fig:chrom_vizs}):
 
 \begin{itemize}
   \item \textbf{Affinity:} Based on specific biological interactions between the protein and a ligand.
@@ -54,7 +58,7 @@ To achieve high levels of purity, laboratory workflows rely almost exclusively o
         \label{fig:sub4}
     \end{subfigure}
     
-    \caption{Visualizations for the different types of chromatography}
+    \caption{Visualizations for the Different Types of Chromatography}
     \label{fig:chrom_vizs}
 \end{figure}
 
@@ -63,11 +67,11 @@ In practice, a single step is rarely sufficient. A complete purification protoco
 \section{Motivation}
 \label{sec:motivation}
 
-Despite more than a century of methodological advances, protein purification remains a major bottleneck in both basic research and industrial biotechnology. While expression systems and analytical techniques have become increasingly standardized, the design of purification protocols (particularly for non-tagged proteins) continues to rely heavily on empirical optimization. In practice, this often involves iterative testing of chromatography media, buffer compositions, and elution conditions, guided primarily by expert intuition and prior experience rather than formalized predictive principles.
+Despite more than a century of methodological advances, protein purification remains a major bottleneck in both basic research and industrial biotechnology \cite{du2022progress}. While expression systems and analytical techniques have become increasingly standardized, the design of purification protocols (particularly for non-tagged proteins) continues to rely heavily on empirical optimization. In practice, this often involves iterative testing of chromatography media, buffer compositions, and elution conditions, guided primarily by expert intuition and prior experience rather than formalized predictive principles.
 
-This trial-and-error paradigm has several limitations. It is time-consuming, costly in terms of reagents and labor, and poorly scalable when applied to large numbers of proteins, such as those emerging from modern genomics and structural biology initiatives, like \textit{AlphaFold}, a deep learning model that predicts protein structures.
+This trial-and-error paradigm has several limitations. It is time-consuming, costly in terms of reagents and labor, and poorly scalable when applied to large numbers of proteins, such as those emerging from modern genomics and structural biology initiatives, like \textit{AlphaFold} \cite{Jumper2021}, a deep learning model that predicts protein structures.
 
-Recent advances in machine learning, particularly sequence-based modeling and natural language processing, provide an opportunity to address this gap. Large public repositories such as the Protein Data Bank implicitly encode decades of successful purification efforts, while biomedical literature contains detailed experimental protocols that are now accessible in machine-readable form. We hope that by leveraging these resources we can accelerate the discovery of protein purification protocols using deep learning tools and techniques.
+Recent advances in machine learning, particularly sequence-based modeling and natural language processing, provide an opportunity to address this gap. Large public repositories such as the Protein Data Bank \cite{Berman2000} implicitly encode decades of successful purification efforts, while biomedical literature contains detailed experimental protocols that are now accessible in machine-readable form. We assume that by leveraging these resources we can accelerate the discovery of protein purification protocols using deep learning tools and techniques.
 
 \section{Goal}
 \label{sec:goal}

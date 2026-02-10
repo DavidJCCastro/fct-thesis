@@ -44,7 +44,7 @@ The pipeline was engineered to identify, retrieve, and process scientific litera
     \item \textit{Information Extraction:} Processing the unstructured text to isolate chromatography steps and related biochemical metadata.
 \end{enumerate}
 
-\subsection{Determining sources of purification protocol}
+\subsection{Determining sources of purification protocols}
 
 In order to get a high volume of quality training data, we would need a source of correctly documented protein purification protocols and the proteins they are being applied to. Given that there is no centralized database with such information, and selecting by hand would prove unfeasible, the first step was to find a solution to this problem. In the context of biochemistry, the most comprehensive descriptions of protein purification processes are found within peer-reviewed scientific papers. However, the vast volume of published literature demands a systematic method for identifying relevant documents, as manual selection is not scalable for a dataset of the size required for deep learning.
 
@@ -67,7 +67,7 @@ In Figure~\ref{fig:old_viz} we have a diagram illustrating our initial setup for
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=\linewidth]{diagrams/old_viz}
-  \caption{Diagram of old method}
+  \caption[Diagram of Old Method of Information Extraction]{The PDB query handler queries the PDB API for its data, resulting in a dictionary of data of the structures. The PDB data contains UniProt IDs, which we use to map structures to their corresponding proteins. Finally, we use the PDB's primary citation information to query Europe PMC's API for the full-text of the paper, which we use to extract the protein's purification protocol.}
   \label{fig:old_viz}
 \end{figure}
 
@@ -78,7 +78,7 @@ Recognizing that this manual mapping was becoming a bottleneck, I sought a more 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=\linewidth]{diagrams/new_viz}
-  \caption{Diagram of new method}
+  \caption[Diagram of New Method of Information Extraction]{In the new method of information extraction the mapping between a UniProt ID and a PDB ID is downloaded from EBI's website. Thanks to this, all we have to do is fetch the primary citation information for each PDB entry and fetch the paper full-text from EuropePMC.}
   \label{fig:new_viz}
 \end{figure}
 
@@ -97,7 +97,7 @@ Having this simplified mapping allowed us to create better visualizations of the
     \includegraphics[width=\linewidth]{diagrams/uniprots_per_pdb}
     \caption{Number of UniProt IDs per PDB ID}
   \end{subfigure}
-  \caption{PDB/UniProt ID distribution}
+  \caption{PDB/UniProt ID Distribution}
   \label{fig:mapping_distribution}
 \end{figure}
 
@@ -126,7 +126,7 @@ Given the size of the full mapping and the databases we query, using every entry
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=\linewidth]{diagrams/sankey_result}
-  \caption{Results Sankey Diagram}
+  \caption{Selected Papers Full-Text Extraction Results Sankey Diagram}
   \label{fig:sankey_result}
 \end{figure}
 
@@ -148,14 +148,14 @@ In the early stages of development, I needed a simple and reliable way to identi
 
 While this approach was successful for locating the general area of interest during preliminary tests, it was not sufficient for our ultimate goal. The specific steps, the tools being used, their sizes, concentrations and other parameters and their order are extremely important to systemically define each purification protocol, so we had to refine our approach.
 
-For this, I leveraged the fact that protein purification is a specialized field with a relatively finite set of techniques. Most protocols follow a logical progression using a limited number of standard methods, such as Affinity Chromatography, Ion Exchange, or Size Exclusion.
+For this, I leveraged the fact that protein purification is a specialized field with a relatively finite set of techniques. Most protocols follow a logical progression using a limited number of standard methods, such as Affinity Chromatography, Ion Exchange, or Size Exclusion (\autoref{fig:chrom_vizs}).
 
 By recognizing this pattern, I developed a comprehensive dictionary of chromatography terms, tools, and specific biochemical markers (such as "His-tag," "IMAC," "gradient elution," or "superdex"). The underlying logic is that these technical terms are highly specific; they are rarely mentioned in biological literature outside the context of an actual purification protocol. In Figure~\ref{fig:chrom_techniques} we can see an example of the keywords' hierarchy for the "Size Exclusion" technique category.
 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=\linewidth]{diagrams/chrom_techniques}
-  \caption{Chromatography techniques hierarchy}
+  \caption{Example of Chromatography Techniques Hierarchy}
   \label{fig:chrom_techniques}
 \end{figure}
 
@@ -190,7 +190,39 @@ The overlapping nature of these subtasks reflects the iterative development proc
 
 \subsection{Predictive Model Development}
 
-Model development comprises several interconnected subtasks. Initial work will focus on architecture design, involving the evaluation of alternative Transformer configurations based on sequence modeling requirements, attention mechanisms, and the vocabulary of chromatography techniques, as seen in Appendix~\ref{app:appendix}.
+Model development comprises several interconnected subtasks. Initial work will focus on architecture design, involving the evaluation of alternative Transformer configurations based on sequence modeling requirements, attention mechanisms, and the vocabulary of chromatography techniques, as seen in Appendix~\ref{app:chromatography_dictionary}.
+
+The protein entries from the PDB that have purification protocols described in the literature will be curated and several structure-based physico-chemical properties will be calculated using the software MOE \cite{MOE2024}. First, the PDB structures will be fixed for missing atoms/amino acids using the QuickPrep Tool. Then, physico-chemical properties will be calculated to be used as protein descriptors, \autoref{tab:prop_table}. These descriptors will be what the model will base itself on to make predictions. This task will be done in collaboration with the Biomolecular Engineering Lab, Chemistry Department, NOVA FCT, UNL.
+
+\begin{table}[h]
+\centering
+\caption{Table of Protein Descriptors}
+\label{tab:prop_table}
+\begin{tabular}{|l|l|l|}
+\hline
+Name & Description & Class \\
+\hline
+patch\_hyd & Area of hydrophobic protein patch(es) & Protein Patch \\
+patch\_pos & Area of positive protein patch(es) & Protein Patch \\
+patch\_neg & Area of negative protein patch(es) & Protein Patch \\
+patch\_ion & Area of ionic protein patch(es) & Protein Patch \\
+ens\_charge & Ensemble Net Charge & Titration \\
+mass & Protein Mass in kDa & Molecular \\
+pI\_3D & Structure-based pI Prediction & Molecular \\
+r\_gyr & Radius of Gyration & Molecular \\
+r\_solv & Hydrodynamic Radius & Molecular \\
+asa\_vdw & Accessible Surface Area (Water Probe) & Molecular \\
+asa\_hyd & Hydrophobic Surface Area & Molecular \\
+asa\_hph & Hydrophilic Surface Area & Molecular \\
+volume & Protein Volume & Molecular \\
+mobility & Protein Mobility & Molecular \\
+dipole\_moment & Protein Dipole Moment & Molecular \\
+hyd\_moment & Hydrophobicity Moment & Molecular \\
+res\_exp & Residue Percent Exposure & Residue \\
+pI\_seq & Sequence-based pI Prediction & Sequence \\
+\hline
+\end{tabular}
+\end{table}
 
 The training phase represents the most resource-intensive component of the project. Beyond the computational demands of model training itself, this period encompasses the development of data preprocessing pipelines, implementation of the wrapper algorithm, and iterative refinement based on preliminary results. The wrapper algorithm serves as a gap filling layer that addresses practical limitations of the model, handling tasks such as input normalization, output formatting and constraint enforcement to maximize the generated protocols' usefulness, resulting in a complete end-to-end tool.
 

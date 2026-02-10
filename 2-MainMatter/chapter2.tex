@@ -16,22 +16,22 @@
 
 %\ntindex[Historical context]{}
 
-The history of protein purification is intrinsically linked to our understanding of life at the molecular level. This journey began in 1789 when Antoine Fourcroy first distinguished several types of complex organic substances, which he categorized as "albumins," including fibrin, gelatin, and gluten. Although these substances were not yet recognized as proteins, their consistent presence in biological processes made them a primary focus for early chemists. The identification of the building blocks of these substances was a slow process; while asparagine was the first amino acid isolated in 1809, its role as a fundamental constituent of proteins (\ref{fig:protein}) was not fully established until 1873. A critical link was formed earlier, in 1819, with the isolation of leucine, which helped researchers begin to understand the chemical nature of these "albuminous" materials.
+The history of protein purification is intrinsically linked to our understanding of life at the molecular level. This journey began in 1789 when Antoine Fourcroy first distinguished several types of complex organic substances, which he categorized as "albumins," including fibrin, gelatin, and gluten \cite{protein_timeline}. Although these substances were not yet recognized as proteins, their consistent presence in biological processes made them a primary focus for early chemists. The identification of the building blocks of these substances was a slow process; while asparagine was the first amino acid isolated in 1809, its role as a fundamental constituent of proteins (\autoref{fig:protein}) was not fully established until 1873. A critical link was formed earlier, in 1819, with the isolation of leucine, which helped researchers begin to understand the chemical nature of these "albuminous" materials.
 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=\linewidth]{diagrams/protein}
-  \caption{Protein structure}
+  \caption[Representations of the Different Levels of Protein Structures]{A linear amino acid chain (primary structure) folds into helices and sheets (secondary structure), forms a three-dimensional shape (tertiary structure), and may assemble with other chains into a multi-subunit protein (quaternary structure).}
   \label{fig:protein}
 \end{figure}
 
 By 1837, Gerrit J. Mulder determined the elemental composition of several proteins and proposed that they shared a common core substance. In response to these findings, Jacob Berzelius suggested the name "protein" in 1838, derived from the Greek word \textit{proteios}, meaning "primary" or "of the first rank." Despite this naming, the chemical diversity of proteins remained largely unknown; at the time, only glycine and leucine had been identified. It would take nearly another century, until the discovery of threonine in 1936, for the complete set of 20 standard amino acids to be recognized.
 
-A defining moment in the field occurred in 1926, amidst a heated debate over whether enzymes were distinct chemical entities or simply "catalytic forces" associated with proteins. James Sumner settled this by isolating and crystallizing the enzyme urease from jack beans. This achievement provided the first definitive proof that enzymes were proteins with specific, defined chemical structures that could be purified to homogeneity. Sumner's work, which earned him the Nobel Prize in 1946, effectively birthed the field of structural biochemistry and established purification as a prerequisite for understanding protein function.
+A defining moment in the field occurred in 1926, amidst a heated debate over whether enzymes were distinct chemical entities or simply "catalytic forces" associated with proteins. James Sumner settled this by isolating and crystallizing the enzyme urease from jack beans. This achievement provided the first definitive proof that enzymes were proteins with specific, defined chemical structures that could be purified to homogeneity. Sumner's work, which earned him the Nobel Prize in 1946 \cite{protein_timeline_2}, effectively birthed the field of structural biochemistry and established purification as a prerequisite for understanding protein function.
 
 In the decades following Sumner's breakthrough, the field saw the development of diverse biophysical techniques designed to separate proteins based on their intrinsic properties, such as electrical charge, molecular size, and polarity. These methods—including various forms of chromatography and electrophoresis—became the standard toolkit for biochemists. The landscape of protein science changed again in 1973, when Stanley Cohen and Herbert Boyer developed recombinant DNA technology. This allowed scientists to insert specific DNA sequences into host organisms like \textit{E. coli}, turning bacteria into "factories" for the mass production of specific proteins.
 
-While recombinant technology solved the problem of protein "sourcing," it introduced new challenges for purification. In the 1980s, the development of affinity tags (such as the polyhistidine tag or GST-tag) revolutionized the field by allowing researchers to add a universal "handle" to any recombinant protein. This made purification significantly easier and more predictable. However, these tags can often interfere with the protein's native folding, biological activity, or its suitability for therapeutic use in humans. 
+While recombinant technology solved the problem of protein "sourcing," it introduced new challenges for purification. In the 1980s, the development of affinity tags (such as the polyhistidine tag or GST-tag) revolutionized the field by allowing researchers to add a universal "handle" to any recombinant protein \cite{Taron2024}. This made purification significantly easier and more predictable. However, these tags can often interfere with the protein's native folding, biological activity, or its suitability for biopharmaceuticals \cite{Kimple2013}. 
 
 Consequently, the purification of "non-tagged" proteins remains the gold standard for many high-precision applications. Because every non-tagged protein has a unique combination of surface charges and hydrophobic patches, designing an effective purification protocol remains a labor-intensive process of trial and error. This historical difficulty is the primary driver for the current research, as we seek to automate the design of these complex protocols through computational modeling.
 
@@ -60,14 +60,21 @@ Beyond simple sequence storage, UniProt facilitates data interoperability by pro
 \subsection{Literature mining approaches}
 The challenge of extracting structured information from unstructured biomedical literature has been extensively documented in meta-research contexts \cite{beltagy2019scibertpretrainedlanguagemodel, bimed-extract-meta-reasearch, dockes2024mining}. The fundamental scalability problem inherent to manual literature curation is: with over 1 million papers indexed by PubMed annually, traditional manual extraction approaches become prohibitively time-consuming and difficult to reproduce \cite{dockes2024mining}. This limitation is particularly evident when dealing with methodological details buried within specific, unstandardized sections of natural language text, like what we find in the scientific literature.
 
-To address these challenges in their domain, Dockès et al. \cite{dockes2024mining} developed \texttt{pubget}, a command-line tool for bulk downloading and processing articles from PubMed Central, and \texttt{labelbuddy}, a lightweight annotation application for creating ground-truth datasets. While these tools target neuroimaging literature specifically, their underlying approach to automated content extraction and manual validation may prove valuable for protein purification protocol mining, particularly when validation datasets become necessary for training or evaluating other extraction methods.
+To address these challenges in their domain, Dockès et al. \cite{dockes2024mining} developed \texttt{pubget}, a command-line tool for bulk downloading and processing articles from PubMed Central, and \texttt{labelbuddy} (\autoref{fig:annotate}), a lightweight annotation application for creating ground-truth datasets. While these tools target neuroimaging literature specifically, their underlying approach to automated content extraction and manual validation may prove valuable for protein purification protocol mining, particularly when validation datasets become necessary for training or evaluating other extraction methods.
 
-In Figure~\ref{fig:mining-lit} we see a table with a breakdown of the pros and cons of the different approaches for their case, which is similar to ours. In our case, after researching the possibility of re-using an existing corpus, the ones closest in similarity to what we need were not readily available nor ideal. Manually collecting papers, given its low scalability, was also not suited for our needs, considering we needed a very large amount of data for our purpose. This left us no choice but to automatically collecting papers, which is what our data mining tool attempts to do.
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{diagrams/annotate}
+  \caption{Screenshot of the Lightweight Data Annotation Tool \texttt{labelbuddy} \cite{dockes2024mining}}
+  \label{fig:annotate}
+\end{figure}
+
+In Figure~\ref{fig:mining-lit} we see a table with a breakdown of the pros and cons of the different approaches for their case, which is similar to ours. In our case, after researching the possibility of re-using an existing corpus, the ones closest in similarity to what we need were not readily available nor ideal. Manually collecting papers, given its low scalability, was also not suited for our needs, considering we needed a very large amount of data for our purpose. This left us no choice but to automatically collect papers, which is what our data mining tool attempts to do.
 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=\linewidth]{diagrams/mining-lit}
-  \caption{Literature mining approaches \cite{dockes2024mining}}
+  \caption{Table Breakdown of Literature Mining Approaches by J. Dockès et al. \cite{dockes2024mining}}
   \label{fig:mining-lit}
 \end{figure}
 
@@ -88,12 +95,12 @@ BioBERT (Bidirectional Encoder Representations from Transformers for Biomedical 
 
 While models like BioBERT have significantly improved biomedical NER, they remain constrained by a fixed taxonomy, requiring the fine-tuning of a classification head for a pre-defined set of entities \cite{lee2020biobert, yazdani2025gliner}. This limitation makes them less adaptable to more specific domains, where certain entity types have no training data, as is our case of chromatography techniques. To overcome these challenges, GLiNER-BioMed introduces an "open NER" framework that treats entity recognition as a matching problem between text spans and natural language labels \cite{yazdani2025gliner}.
 
-The primary advantage of GLiNER-BioMed for automated data mining lies in its ability to perform zero-shot recognition, enabling the extraction of arbitrary entity types without model retraining. This flexibility is achieved through a domain-specific adaptation of the Generalist and Lightweight Model for NER (GLiNER) \cite{yazdani2025gliner}. The development of GLiNER-BioMed involved several key techniques, most notably synthetic data distillation. In this process, a large-scale teacher model (OpenBioLLM-70B) was used to generate high-quality NER annotations, which were then used to train a smaller student model to efficiently annotate a 105,000-sample pre-training corpus \cite{yazdani2025gliner}. We can see a diagram of this workflow in Figure~\ref{fig:gliner_biomed_dataset}. This particular technique might prove useful if we come to train our own purification protocol extractor.
+The primary advantage of GLiNER-BioMed for automated data mining lies in its ability to perform zero-shot recognition, enabling the extraction of arbitrary entity types without model retraining. This flexibility is achieved through a domain-specific adaptation of the Generalist and Lightweight Model for NER (GLiNER) \cite{zaratiana-etal-2024-gliner}. The development of GLiNER-BioMed involved several key techniques, most notably synthetic data distillation. In this process, a large-scale teacher model (OpenBioLLM-70B) was used to generate high-quality NER annotations, which were then used to train a smaller student model to efficiently annotate a 105,000-sample pre-training corpus \cite{yazdani2025gliner}. We can see a diagram of this workflow in Figure~\ref{fig:gliner_biomed_dataset}. This particular technique might prove useful if we come to train our own purification protocol extractor.
 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=\linewidth]{diagrams/gliner_biomed_dataset}
-  \caption{Overview of the synthetic pre-training data generation pipeline \cite{yazdani2025gliner}}
+  \caption{Overview of GLiNER-BioMed's Synthetic Pre-Training Data Generation Pipeline \cite{yazdani2025gliner}}
   \label{fig:gliner_biomed_dataset}
 \end{figure}
 
@@ -109,19 +116,19 @@ For the objective of generating purification protocols, the integration of these
 \section{Protein representation}
 In the context of predicting laboratory protocols, the representation of a protein must encapsulate more than its sequence to account for the diverse physico-chemical behaviors encountered during chromatography. Recent developments in protein representation learning have focused on addressing the inherent "knowledge gap" in standard protein language models (LMs), which often fail to capture factual biological context. A notable contribution is the Knowledge-exploited Auto-encoder for Protein (KeAP), which introduces a more granular, token-level exploration of knowledge graphs to enrich primary structure modeling \cite{bian2023keap}.
 
-Unlike earlier models that integrated knowledge at a coarse sequence-wide level, KeAP utilizes a cross-attention mechanism where individual amino acids iteratively query associated knowledge tokens, specifically relation and attribute terms derived from Gene Ontology (GO). This interaction allows the model to integrate functional and structural descriptors, such as molecular functions and cellular localizations, directly into the protein representation. This granular integration enables the production of a "better-contextualized" representation that has shown superior performance in predicting downstream properties like protein stability and binding affinity. For a system designed to generate purification recipes, this paradigm is highly applicable, as it allows the input representation to explicitly leverage biological metadata that dictate chromatography behavior, providing a richer foundation for purification protocol prediction.
+Unlike earlier models that integrated knowledge at a coarse sequence-wide level, KeAP utilizes a cross-attention mechanism where individual amino acids iteratively query associated knowledge tokens, specifically relation and attribute terms derived from Gene Ontology (GO) \cite{ashburner2000gene, 10.1093/nar/gkaf1292}. This interaction allows the model to integrate functional and structural descriptors, such as molecular functions and cellular localizations, directly into the protein representation. This granular integration enables the production of a "better-contextualized" representation that has shown superior performance in predicting downstream properties like protein stability and binding affinity. For a system designed to generate purification recipes, this paradigm is highly applicable, as it allows the input representation to explicitly leverage biological metadata that dictate chromatography behavior, providing a richer foundation for purification protocol prediction.
 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=\linewidth]{diagrams/keap}
-  \caption{KeAP's cross attention mechanism}
+  \caption{KeAP's Cross-Attention Mechanism}
   \label{fig:keap}
 \end{figure}
 
 In Figure~\ref{fig:keap} we have a diagram of KeAP's cross attention mechanism from the original paper. Given a knowledge-graph triplet (Protein, Relation, Attribute), the protein sequence is encoded into amino-acid embeddings, while the associated relation and attribute texts are encoded into word-level representations. Knowledge integration is performed in the protein decoder through stacked Protein--Knowledge exploration (PiK) blocks.
 
 
-\section{Similar Work}
+\section{Previous Works on Protocol Information Extraction}
 
 % protein purification protocol predictive model (4-PM)
 
@@ -146,7 +153,7 @@ A notable contribution from this paper is their hybrid information extraction st
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=\linewidth]{diagrams/llm-pro}
-  \caption{Workflow of the Efficient Article Information Extraction Tool}
+  \caption[Workflow of the Paper's Efficient Article Information Extraction Tool \cite{chen2025llmpurification}]{Articles are processed from PDF files using OCR and segmented into section-based text chunks. All segments are embedded and stored in a vector database, enabling retrieval of the most relevant passages for a given question using semantic similarity. Protein names are identified and standardized using information from UniProt and the PDB, with assistance from an LLM. The selected article segments, target protein names, and question of interest are combined into a prompt for LLM-based information extraction. A quality-checking step validates the output before structured results are generated.}
   \label{fig:llm-pro}
 \end{figure}
 
